@@ -104,8 +104,6 @@ body {
 }
 
 .form-container {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
   gap: 20px;
   padding: 20px;
   border-radius: 15px;

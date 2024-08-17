@@ -44,7 +44,14 @@ class Calendar extends HTMLElement {
           background: #f9f9f9;
           border-radius: 5px;
           text-align: center;
+          cursor: pointer;
         }
+
+        .calendar-grid div.selected {
+          background: #00aaff;
+          color: #fff;
+        }
+
         @media (max-width: 400px) {
           .calendar-grid {
             grid-template-columns: repeat(5, 1fr);
@@ -52,16 +59,27 @@ class Calendar extends HTMLElement {
         }
       </style>
       <div class="calendar">
-        <h2>Kalender</h2>
+        <h2>Pilih Tanggal</h2>
         <div class="calendar-header">
           <select id="month-select"></select>
           <select id="year-select"></select>
         </div>
         <div class="calendar-grid"></div>
+        <input type="hidden" id="selected-date" name="selected-date">
       </div>
     `;
 
-    this.months = [
+    this.date = new Date();
+    this.selectedMonth = this.date.getMonth();
+    this.selectedYear = this.date.getFullYear();
+    this.selectedDateInput = this.shadowRoot.querySelector("#selected-date");
+
+    this.renderCalendar();
+    this.attachEventListeners();
+  }
+
+  get months() {
+    return [
       "Januari",
       "Februari",
       "Maret",
@@ -75,13 +93,6 @@ class Calendar extends HTMLElement {
       "November",
       "Desember",
     ];
-
-    this.date = new Date();
-    this.selectedMonth = this.date.getMonth();
-    this.selectedYear = this.date.getFullYear();
-
-    this.renderCalendar();
-    this.attachEventListeners();
   }
 
   renderCalendar() {
@@ -131,8 +142,8 @@ class Calendar extends HTMLElement {
         i === this.date.getDate() &&
         this.selectedMonth === this.date.getMonth() &&
         this.selectedYear === this.date.getFullYear();
-      calendarGrid.innerHTML += `<div style="background: ${
-        isToday ? "#00aaff" : "#f9f9f9"
+      calendarGrid.innerHTML += `<div data-date="${i}" class="${
+        isToday ? "selected" : ""
       }">${i}</div>`;
     }
   }
@@ -140,6 +151,7 @@ class Calendar extends HTMLElement {
   attachEventListeners() {
     const monthSelect = this.shadowRoot.querySelector("#month-select");
     const yearSelect = this.shadowRoot.querySelector("#year-select");
+    const calendarGrid = this.shadowRoot.querySelector(".calendar-grid");
 
     monthSelect.addEventListener("change", (event) => {
       this.selectedMonth = parseInt(event.target.value);
@@ -150,6 +162,34 @@ class Calendar extends HTMLElement {
       this.selectedYear = parseInt(event.target.value);
       this.renderCalendar();
     });
+
+    calendarGrid.addEventListener("click", (event) => {
+      if (event.target.hasAttribute("data-date")) {
+        const selectedDate = `${this.selectedYear}-${
+          this.selectedMonth + 1
+        }-${event.target.getAttribute("data-date")}`;
+        this.selectedDateInput.value = selectedDate;
+        this.highlightSelectedDate(event.target);
+
+        this.dispatchEvent(
+          new CustomEvent("dateSelected", {
+            detail: {
+              date: selectedDate,
+            },
+            bubbles: true,
+            composed: true,
+          })
+        );
+      }
+    });
+  }
+
+  highlightSelectedDate(selectedElement) {
+    const calendarGrid = this.shadowRoot.querySelector(".calendar-grid");
+    calendarGrid.querySelectorAll("div").forEach((el) => {
+      el.classList.remove("selected");
+    });
+    selectedElement.classList.add("selected");
   }
 }
 
