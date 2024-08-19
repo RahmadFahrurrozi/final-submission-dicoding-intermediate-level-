@@ -1,0 +1,54 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  text-decoration: none;
+  list-style-type: none;
+  font-family: "Ubuntu", sans-serif;
+}
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+
+  background: rgb(0, 0, 0);
+  background: -moz-linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 24, 43, 1) 100%,
+    rgba(0, 62, 109, 1) 100%
+  );
+  background: -webkit-linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 24, 43, 1) 100%,
+    rgba(0, 62, 109, 1) 100%
+  );
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 24, 43, 1) 100%,
+    rgba(0, 62, 109, 1) 100%
+  );
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#000000", endColorstr="#003e6d", GradientType=1);
+}
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.judul {
+  margin-top: 20px;
+  color: #fff;
+  font-size: 36px;
+  font-weight: bold;
+}
+
+.back {
+  margin: 2rem;
+  border-bottom: solid 1px #fff;
+  width: fit-content;
+  padding-bottom: 10px;
+}

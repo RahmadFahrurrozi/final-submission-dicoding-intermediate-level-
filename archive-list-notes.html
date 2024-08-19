@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notes App</title>
+    <link rel="stylesheet" href="/style/archiveList.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <loader-component></loader-component>
+    <navbar-component></navbar-component>
+    <main>
+      <section class="judul">
+        <h1>Archive list</h1>
+        <archived-note-list></archived-note-list>
+      </section>
+    </main>
+    <div class="back">
+      <a href="index.html">
+        <button-left text="Back"></button-left>
+      </a>
+    </div>
+    <footer-component></footer-component>
+
+    <script type="module" src="./components/archive-list.js"></script>
+    <!-- <script src="/components/buttons.js"></script> -->
+    <script src="/components/buttons.js"></script>
+    <script src="/components/footer.js"></script>
+    <script src="components/loader.js"></script>
+    <script src="components/navbar.js"></script>
+    <script src=""></script>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-import { api } from "../api.js";
+import { api } from "../api/api.js";
 import "./delete-popup.js";
 
 class NoteList extends HTMLElement {
@@ -17,18 +17,50 @@ class NoteList extends HTMLElement {
     try {
       this.showLoading();
       const result = await api.getNotes();
-      this.notes = result.data;
+      if (Array.isArray(result.data)) {
+        this.notes = result.data;
+      } else {
+        this.notes = [];
+        throw new Error("Invalid notes data");
+      }
       this.render();
-      this.hideLoading();
     } catch (error) {
-      console.error("Error:", error);
-      this.hideLoading();
+      console.error("Error fetching notes:", error);
       this.showNotification("Failed to fetch notes", "error");
+    } finally {
+      this.hideLoading();
+    }
+  }
+
+  async archiveNote(id) {
+    console.log("Archiving note with ID:", id);
+    try {
+      this.showLoading();
+      const result = await api.archiveNote(id);
+
+      if (result.status === "success") {
+        this.notes = this.notes.filter((note) => note.id !== id);
+        this.render();
+        this.showNotification(
+          result.message || "Note archived successfully!",
+          "success"
+        );
+        const event = new CustomEvent("noteArchived", { detail: { id } });
+        document.dispatchEvent(event);
+      } else {
+        throw new Error(result.message || "Failed to archive note");
+      }
+    } catch (error) {
+      console.error("Error archiving note:", error);
+      this.showNotification(error.message || "Failed to archive note", "error");
+    } finally {
+      this.hideLoading();
     }
   }
 
   render() {
     this.shadowRoot.innerHTML = `
+       
       <style>
         .notes-container {
           display: grid;
@@ -84,6 +116,14 @@ class NoteList extends HTMLElement {
           background-color: #d32f2f;
           transform: scale(1.05);
         }
+        .archive-button {
+          background-color: #4CAF50;
+          color: white;
+        }
+        .archive-button:hover {
+          background-color: #45a049;
+          transform: scale(1.05);
+        }
         #loading {
           position: fixed;
           top: 50%;
@@ -125,23 +165,29 @@ class NoteList extends HTMLElement {
         }
       </style>
       <div class="notes-container">
-        ${this.notes
-          .map(
-            (note) => `
-          <div class="note-card" data-id="${note.id}">
-            <h3>${note.title || "refresh your browser"}</h3>
-            <p>${note.body || "refresh your browser"}</p>
-            <div class="date">${new Date(
-              note.createdAt
-            ).toLocaleDateString()}</div>
-            <div class="note-actions">
-              <button class="delete-btn" data-id="${note.id}">Delete</button>
+        ${
+          Array.isArray(this.notes) && this.notes.length > 0
+            ? this.notes
+                .map(
+                  (note) => `
+            <div class="note-card" data-id="${note.id}">
+              <h3>${note.title || "refresh your browser"}</h3>
+              <p>${note.body || "refresh your browser"}</p>
+              <div class="date">${new Date(
+                note.createdAt
+              ).toLocaleDateString()}</div>
+              <div class="note-actions">
+                <button class="delete-btn" data-id="${note.id}">Delete</button>
+                <button class="archive-button" data-id="${
+                  note.id
+                }">Archive</button>
+              </div>
             </div>
-          </div>
-        `
-          )
-          .join("")}
-          
+          `
+                )
+                .join("")
+            : "<p style='text-align: center; color: red;'>Belum ada catatan, silahkan buat catatan terlebih dahulu</p>"
+        }
       </div>
     `;
   }
@@ -150,6 +196,8 @@ class NoteList extends HTMLElement {
     this.shadowRoot.addEventListener("click", (e) => {
       if (e.target.classList.contains("delete-btn")) {
         this.showDeletePopup(e.target.dataset.id);
+      } else if (e.target.classList.contains("archive-button")) {
+        this.archiveNote(e.target.dataset.id);
       }
     });
 
@@ -190,11 +238,11 @@ class NoteList extends HTMLElement {
       this.notes = this.notes.filter((note) => note.id !== id);
       this.render();
       this.showNotification("Note deleted successfully!", "success");
-      this.hideLoading();
     } catch (error) {
-      console.error("Error:", error);
-      this.hideLoading();
+      console.error("Error deleting note:", error);
       this.showNotification("Failed to delete note", "error");
+    } finally {
+      this.hideLoading();
     }
   }
 

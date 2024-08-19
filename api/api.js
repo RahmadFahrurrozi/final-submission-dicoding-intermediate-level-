@@ -35,4 +35,38 @@ export const api = {
     }
     return response.json();
   },
+
+  async archiveNote(id) {
+    const response = await fetch(`${BASE_URL}/notes/${id}/archive`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Failed to archive note");
+    }
+    return response.json();
+  },
+
+  async getArchivedNotes() {
+    const response = await fetch(`${BASE_URL}/notes?archived=true`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch archived notes");
+    }
+    return response.json();
+  },
+
+  async unarchiveNote(id) {
+    const response = await fetch(`${BASE_URL}/notes/${id}/unarchive`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Failed to unarchive note");
+    }
+    return response.json();
+  },
 };

@@ -65,14 +65,13 @@ class Calendar extends HTMLElement {
           <select id="year-select"></select>
         </div>
         <div class="calendar-grid"></div>
-        <input type="hidden" id="selected-date" name="selected-date">
       </div>
+      <input type="hidden" id="selected-date" name="selectedDate">
     `;
 
     this.date = new Date();
     this.selectedMonth = this.date.getMonth();
     this.selectedYear = this.date.getFullYear();
-    this.selectedDateInput = this.shadowRoot.querySelector("#selected-date");
 
     this.renderCalendar();
     this.attachEventListeners();
@@ -113,11 +112,10 @@ class Calendar extends HTMLElement {
     const currentYear = new Date().getFullYear();
     yearSelect.innerHTML = Array.from(
       { length: 10 },
-      (_, i) => `
-      <option value="${currentYear - 5 + i}" ${
-        currentYear - 5 + i === this.selectedYear ? "selected" : ""
-      }>${currentYear - 5 + i}</option>
-    `
+      (_, i) =>
+        `<option value="${currentYear - 5 + i}" ${
+          currentYear - 5 + i === this.selectedYear ? "selected" : ""
+        }>${currentYear - 5 + i}</option>`
     ).join("");
 
     calendarGrid.innerHTML = "";
@@ -168,7 +166,6 @@ class Calendar extends HTMLElement {
         const selectedDate = `${this.selectedYear}-${
           this.selectedMonth + 1
         }-${event.target.getAttribute("data-date")}`;
-        this.selectedDateInput.value = selectedDate;
         this.highlightSelectedDate(event.target);
 
         this.dispatchEvent(

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Notes App</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="/style/style.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -13,6 +13,7 @@
     />
   </head>
   <body>
+    <loader-component></loader-component>
     <navbar-component></navbar-component>
     <main>
       <section class="first-section">
@@ -47,9 +48,14 @@
         <h2 class="notes-title">Daftar Catatan</h2>
         <note-list></note-list>
       </section>
+      <div>
+        <a href="archive-list-notes.html">
+          <button-left text="archive list"></button-left>
+        </a>
+      </div>
     </main>
     <footer-component></footer-component>
-
+    <script src="/components/loader.js"></script>
     <script src="/components/navbar.js"></script>
     <script src="/components/buttons.js"></script>
     <script type="module" src="/components/calendar.js"></script>
