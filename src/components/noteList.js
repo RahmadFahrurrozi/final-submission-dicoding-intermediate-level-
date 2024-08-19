@@ -1,5 +1,5 @@
 import { api } from "../api/api.js";
-import "./delete-popup.js";
+import "../components/delete-popup.js";
 
 class NoteList extends HTMLElement {
   constructor() {
@@ -33,25 +33,49 @@ class NoteList extends HTMLElement {
   }
 
   async archiveNote(id) {
-    console.log("Archiving note with ID:", id);
+    console.log("NoteList: Archiving note with ID:", id);
+    if (!id) {
+      console.error("NoteList: Attempted to archive note with undefined ID");
+      this.showNotification("Error: Invalid note ID", "error");
+      return;
+    }
+
     try {
       this.showLoading();
       const result = await api.archiveNote(id);
 
       if (result.status === "success") {
-        this.notes = this.notes.filter((note) => note.id !== id);
-        this.render();
-        this.showNotification(
-          result.message || "Note archived successfully!",
-          "success"
-        );
-        const event = new CustomEvent("noteArchived", { detail: { id } });
-        document.dispatchEvent(event);
+        const archivedNote = this.notes.find((note) => note.id === id);
+
+        if (archivedNote) {
+          // Remove the archived note from the list of active notes
+          this.notes = this.notes.filter((note) => note.id !== id);
+          this.render();
+          this.showNotification(
+            result.message || "Note archived successfully!",
+            "success"
+          );
+
+          // Dispatch a custom event with the archived note's data
+          const event = new CustomEvent("noteArchived", {
+            detail: archivedNote,
+            bubbles: true,
+            composed: true,
+          });
+          console.log(
+            "NoteList: Dispatching noteArchived event:",
+            archivedNote
+          );
+          this.dispatchEvent(event);
+        } else {
+          console.error("NoteList: Note not found for archiving:", id);
+          this.showNotification("Error: Note not found", "error");
+        }
       } else {
         throw new Error(result.message || "Failed to archive note");
       }
     } catch (error) {
-      console.error("Error archiving note:", error);
+      console.error("NoteList: Error archiving note:", error);
       this.showNotification(error.message || "Failed to archive note", "error");
     } finally {
       this.hideLoading();
@@ -60,7 +84,6 @@ class NoteList extends HTMLElement {
 
   render() {
     this.shadowRoot.innerHTML = `
-       
       <style>
         .notes-container {
           display: grid;
@@ -147,7 +170,6 @@ class NoteList extends HTMLElement {
           transition: opacity 0.3s, transform 0.3s;
           z-index: 1000;
         }
-       
         .notification.show {
           opacity: 1;
           transform: translateY(0);
@@ -195,9 +217,19 @@ class NoteList extends HTMLElement {
   setupEventListeners() {
     this.shadowRoot.addEventListener("click", (e) => {
       if (e.target.classList.contains("delete-btn")) {
-        this.showDeletePopup(e.target.dataset.id);
+        const id = e.target.dataset.id;
+        if (id) {
+          this.showDeletePopup(id);
+        } else {
+          console.error("Delete button clicked but no ID found");
+        }
       } else if (e.target.classList.contains("archive-button")) {
-        this.archiveNote(e.target.dataset.id);
+        const id = e.target.dataset.id;
+        if (id) {
+          this.archiveNote(id);
+        } else {
+          console.error("Archive button clicked but no ID found");
+        }
       }
     });
 

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Notes App</title>
-    <link rel="stylesheet" href="/style/archiveList.css" />
+    <link rel="stylesheet" href="/src/style/archiveList.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -16,10 +16,10 @@
     <loader-component></loader-component>
     <navbar-component></navbar-component>
     <main>
-      <section class="judul">
+      <di class="title">
         <h1>Archive list</h1>
-        <archived-note-list></archived-note-list>
-      </section>
+      </di>
+      <archived-note-list></archived-note-list>
     </main>
     <div class="back">
       <a href="index.html">
@@ -28,12 +28,11 @@
     </div>
     <footer-component></footer-component>
 
-    <script type="module" src="./components/archive-list.js"></script>
-    <!-- <script src="/components/buttons.js"></script> -->
-    <script src="/components/buttons.js"></script>
-    <script src="/components/footer.js"></script>
-    <script src="components/loader.js"></script>
-    <script src="components/navbar.js"></script>
+    <script type="module" src="/src/components/archive-list.js"></script>
+    <script src="/src/components/buttons.js"></script>
+    <script src="/src/components/footer.js"></script>
+    <script src="/src/components/loader.js"></script>
+    <script src="/src/components/navbar.js"></script>
     <script src=""></script>
   </body>
 </html>
