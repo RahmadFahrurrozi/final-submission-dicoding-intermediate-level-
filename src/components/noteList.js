@@ -192,16 +192,20 @@ class NoteList extends HTMLElement {
             ? this.notes
                 .map(
                   (note) => `
-            <div class="note-card" data-id="${note.id}">
-              <h3>${note.title || "refresh your browser"}</h3>
-              <p>${note.body || "refresh your browser"}</p>
+             <div class="note-card" data-id="${note.id}">
+              <h3>${
+                note.title || note.data.title || "refresh your browser"
+              }</h3>
+              <p>${note.body || note.data.body || "refresh your browser"}</p>
               <div class="date">${new Date(
-                note.createdAt
+                note.createdAt || note.data.createdAt
               ).toLocaleDateString()}</div>
               <div class="note-actions">
-                <button class="delete-btn" data-id="${note.id}">Delete</button>
+                <button class="delete-btn" data-id="${
+                  note.id || note.data.id
+                }">Delete</button>
                 <button class="archive-button" data-id="${
-                  note.id
+                  note.id || note.data.id
                 }">Archive</button>
               </div>
             </div>

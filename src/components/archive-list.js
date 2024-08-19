@@ -14,7 +14,7 @@ class ArchivedNoteList extends HTMLElement {
   async fetchArchivedNotes() {
     try {
       this.showLoading();
-      const result = await api.getArchivedNotes(); // Pastikan API ini ada untuk mendapatkan catatan yang diarsipkan
+      const result = await api.getArchivedNotes();
       if (Array.isArray(result.data)) {
         this.archivedNotes = result.data;
       } else {
